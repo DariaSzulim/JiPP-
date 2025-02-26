@@ -1,0 +1,17 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+        // Zadanie 2
+        Console.WriteLine("Podaj swoje imię:");
+        var name = Console.ReadLine();
+        Console.WriteLine("Hello " + name);
+        
+        // Zadanie 3 
+        int result = 5 + 9; 
+        Console.WriteLine("Wynik: " + result);
+
+}
+}
