@@ -1,0 +1,63 @@
+using System;
+
+class Program
+{
+    static void Main()
+    {
+
+   //Zadanie 1
+      int number = 2115;
+      float money = 21,37zl;
+      string text = "tekst tekst tekst;
+      bool isLogged = true;
+      char myChar = 'X';
+      decimal price = 99.99m;
+
+      Console.WriteLine($"number: {number}, money: {money}, text: {text}, isLogged: {isLogged}, myChar: {myChar}, price: {price}");
+
+
+ // Zadanie 2
+        string myAge = "Age: ";
+        int wifeAge = 18;
+        string result2 = myAge + wifeAge; 
+        Console.WriteLine(result2);
+
+// Zadanie 3
+
+         bool isTrue = true;
+        bool isFalse = false;
+        bool isReallyTrue = true;
+
+        bool and = isTrue && isFalse;
+        bool or = isTrue || isReallyTrue;
+        bool negative = !isFalse;
+
+        Console.WriteLine($"AND: {and}, OR: {or}, NEGATION: {negative}");
+
+
+// Zadanie 4
+
+        int a = 5, b = 12;
+        int add = a + b;
+        int sub = a - b;
+        double div = (double)a / b; // Rzutowanie na double dla precyzyjnego wyniku
+        int mul = a * b;
+        int mod = a % b;
+
+        Console.WriteLine($"ADD: {add}, SUB: {sub}, DIV: {div}, MUL: {mul}, MOD: {mod}");
+
+//Zadanie 5
+         string x = "Ala ";
+        string y = "ma ";
+        string z = "kota.";
+        string result3 = x + y + z;
+
+        Console.WriteLine(result3);
+
+}
+}
+
+
+
+
+
