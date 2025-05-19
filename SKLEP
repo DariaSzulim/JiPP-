@@ -1,0 +1,175 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Produkt
+{
+    public int Id { get; set; }
+    public string Nazwa { get; set; }
+    public decimal Cena { get; set; }
+    public int DostepnaIlosc { get; set; }
+
+    public Produkt(int id, string nazwa, decimal cena, int ilosc)
+    {
+        Id = id;
+        Nazwa = nazwa;
+        Cena = cena;
+        DostepnaIlosc = ilosc;
+    }
+}
+
+class PozycjaKoszyka
+{
+    public Produkt Produkt { get; set; }
+    public int Ilosc { get; set; }
+}
+
+class Program
+{
+    static List<Produkt> produkty = new List<Produkt>();
+    static List<PozycjaKoszyka> koszyk = new List<PozycjaKoszyka>();
+
+    static void Main()
+    {
+        InicjalizujProdukty();
+
+        while (true)
+        {
+            Console.Clear();
+            Console.WriteLine("=== SKLEP ===");
+            Console.WriteLine("1. Wyświetl produkty");
+            Console.WriteLine("2. Dodaj produkt do koszyka");
+            Console.WriteLine("3. Usuń produkt z koszyka");
+            Console.WriteLine("4. Pokaż koszyk");
+            Console.WriteLine("5. Finalizuj zakup");
+            Console.WriteLine("0. Wyjdź");
+            Console.Write("Wybierz opcję: ");
+
+            string opcja = Console.ReadLine();
+            switch (opcja)
+            {
+                case "1": WyswietlProdukty(); break;
+                case "2": DodajDoKoszyka(); break;
+                case "3": UsunZKoszyka(); break;
+                case "4": PokazKoszyk(); break;
+                case "5": FinalizujZakup(); break;
+                case "0": return;
+                default: Console.WriteLine("Nieprawidłowa opcja."); break;
+            }
+            Console.WriteLine("\nNaciśnij dowolny klawisz...");
+            Console.ReadKey();
+        }
+    }
+
+    static void InicjalizujProdukty()
+    {
+        produkty = new List<Produkt>
+        {
+            new Produkt(1, "Zel do mycia twarzy", 20, 100),
+            new Produkt(2, "Pianka do twarzy", 27, 100),
+            new Produkt(3, "Peeling do twarzy", 25, 100),
+            new Produkt(4, "Maseczka w płachcie", 3, 150),
+            new Produkt(5, "Tonik", 15, 100),
+            new Produkt(6, "Zel pod prysznic", 10, 120),
+            new Produkt(7, "Peeling do ciała", 20, 120),
+            new Produkt(8, "Podkład do twarzy", 42, 80),
+            new Produkt(9, "Puder", 38, 80),
+            new Produkt(10, "Tusz do rzęs", 32, 80)
+        };
+    }
+
+    static void WyswietlProdukty()
+    {
+        Console.WriteLine("\n--- Lista produktów ---");
+        foreach (var p in produkty)
+        {
+            Console.WriteLine($"{p.Id}. {p.Nazwa} - {p.Cena} zł ({p.DostepnaIlosc} szt.)");
+        }
+    }
+
+    static void DodajDoKoszyka()
+    {
+        WyswietlProdukty();
+        Console.Write("\nPodaj ID produktu do dodania: ");
+        if (int.TryParse(Console.ReadLine(), out int id))
+        {
+            var produkt = produkty.FirstOrDefault(p => p.Id == id);
+            if (produkt != null)
+            {
+                Console.Write("Podaj ilość: ");
+                if (int.TryParse(Console.ReadLine(), out int ilosc) && ilosc > 0)
+                {
+                    int wKoszyku = koszyk.FirstOrDefault(k => k.Produkt.Id == id)?.Ilosc ?? 0;
+                    if (ilosc + wKoszyku <= produkt.DostepnaIlosc)
+                    {
+                        var pozycja = koszyk.FirstOrDefault(k => k.Produkt.Id == id);
+                        if (pozycja != null)
+                            pozycja.Ilosc += ilosc;
+                        else
+                            koszyk.Add(new PozycjaKoszyka { Produkt = produkt, Ilosc = ilosc });
+
+                        Console.WriteLine("Produkt dodany do koszyka.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Brak wystarczającej ilości na stanie.");
+                    }
+                }
+            }
+            else Console.WriteLine("Nie znaleziono produktu.");
+        }
+    }
+
+    static void UsunZKoszyka()
+    {
+        PokazKoszyk();
+        Console.Write("\nPodaj ID produktu do usunięcia: ");
+        if (int.TryParse(Console.ReadLine(), out int id))
+        {
+            var pozycja = koszyk.FirstOrDefault(p => p.Produkt.Id == id);
+            if (pozycja != null)
+            {
+                koszyk.Remove(pozycja);
+                Console.WriteLine("Produkt usunięty z koszyka.");
+            }
+            else
+                Console.WriteLine("Produkt nie znajduje się w koszyku.");
+        }
+    }
+
+    static void PokazKoszyk()
+    {
+        Console.WriteLine("\n--- Koszyk ---");
+        if (koszyk.Count == 0)
+        {
+            Console.WriteLine("Koszyk jest pusty.");
+            return;
+        }
+
+        foreach (var item in koszyk)
+        {
+            Console.WriteLine($"{item.Produkt.Nazwa} - {item.Ilosc} szt. x {item.Produkt.Cena} zł = {item.Ilosc * item.Produkt.Cena} zł");
+        }
+
+        decimal suma = koszyk.Sum(i => i.Ilosc * i.Produkt.Cena);
+        Console.WriteLine($"Suma: {suma} zł");
+    }
+
+    static void FinalizujZakup()
+    {
+        PokazKoszyk();
+        if (koszyk.Count == 0)
+        {
+            Console.WriteLine("Koszyk jest pusty. Nie można finalizować zakupu.");
+            return;
+        }
+
+        foreach (var item in koszyk)
+        {
+            item.Produkt.DostepnaIlosc -= item.Ilosc;
+        }
+
+        koszyk.Clear();
+        Console.WriteLine("Zakup sfinalizowany. Dziękujemy!");
+    }
+}
